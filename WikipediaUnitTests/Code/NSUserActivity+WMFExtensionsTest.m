@@ -52,5 +52,11 @@
                           @"https://en.wikipedia.org/w/index.php?search=dog&title=Special:Search&fulltext=1");
 }
 
+- (void)testABNPlacesURL {
+    NSURL *url = [NSURL URLWithString:@"wikipedia://abnPlaces?WMFLat=1&WMFLong=2"];
+    NSUserActivity *activity = [NSUserActivity wmf_activityForWikipediaScheme:url];
+    XCTAssertEqual(activity.wmf_type, WMFUserActivityTypeABNPlaces);
+}
+
 @end
 

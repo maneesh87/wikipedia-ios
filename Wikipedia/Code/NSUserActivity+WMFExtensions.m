@@ -74,6 +74,27 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     return activity;
 }
 
++ (instancetype)wmf_abnPlacesActivityWithURL:(NSURL *)activityURL {
+    NSURLComponents *components = [NSURLComponents componentsWithURL:activityURL resolvingAgainstBaseURL:NO];
+    NSString *latitude;
+    NSString *longitude;
+    for (NSURLQueryItem *item in components.queryItems) {
+        if ([item.name isEqualToString:@"WMFLat"]) {
+            latitude = item.value;
+        }
+        if ([item.name isEqualToString:@"WMFLong"]) {
+            longitude = item.value;
+        }
+    }
+    NSUserActivity *activity = [self wmf_pageActivityWithName:@"ABNPlaces"];
+
+    NSMutableDictionary *dict = [activity.userInfo mutableCopy];
+    [dict setValue:latitude forKey:@"WMFLat"];
+    [dict setValue:longitude forKey:@"WMFLong"];
+    activity.userInfo = dict;
+    return activity;
+}
+
 + (instancetype)wmf_exploreViewActivity {
     NSUserActivity *activity = [self wmf_pageActivityWithName:@"Explore"];
     return activity;
@@ -125,6 +146,8 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
         return [self wmf_exploreViewActivity];
     } else if ([url.host isEqualToString:@"places"]) {
         return [self wmf_placesActivityWithURL:url];
+    } else if ([url.host isEqualToString:@"abnPlaces"]) {
+        return [self wmf_abnPlacesActivityWithURL:url];
     } else if ([url.host isEqualToString:@"saved"]) {
         return [self wmf_savedPagesViewActivity];
     } else if ([url.host isEqualToString:@"history"]) {
@@ -213,6 +236,8 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
             return WMFUserActivityTypeExplore;
         } else if ([page isEqualToString:@"Places"]) {
             return WMFUserActivityTypePlaces;
+        } else if ([page isEqualToString:@"ABNPlaces"]) {
+            return WMFUserActivityTypeABNPlaces;
         } else if ([page isEqualToString:@"Saved"]) {
             return WMFUserActivityTypeSavedPages;
         } else if ([page isEqualToString:@"History"]) {

@@ -2128,6 +2128,15 @@ class PlacesViewController: ViewController, UISearchBarDelegate, ArticlePopoverV
         view.heading = heading.trueHeading
     }
     
+    @objc
+    public func updateLocationOnMap(toLocation location: CLLocation) {
+        guard view != nil else { // force view instantiation
+            return
+        }
+        panMapToNextLocationUpdate = false
+        self.zoomAndPanMapView(toLocation: location)
+    }
+    
     func zoomAndPanMapView(toLocation location: CLLocation) {
         let region = [location.coordinate].wmf_boundingRegion(with: 10000)
         mapRegion = region
